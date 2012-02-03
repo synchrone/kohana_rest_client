@@ -50,7 +50,7 @@ class REST_Client {
             if (is_array($config)) {
                 // Define a default set of configuration options
                 $defaults = array(
-                    'uri' => 'api.local',
+                    'uri' => 'http://localhost/',
                     'content_type' => 'application/json'
                 );
 
@@ -86,11 +86,6 @@ class REST_Client {
 	const HTTP_OK = 200;
 	const HTTP_CREATED = 201;
 	const HTTP_ACCEPTED = 202;
-
-	/**
-	 * @var  object  the last uri that was requested
-	 */
-	public $last_uri;
 
 	// Instance name
 	protected $_instance;
@@ -229,9 +224,6 @@ class REST_Client {
 		// Run the request, get the status, close the request
 		$data = curl_exec($curl_request);
 		$status = curl_getinfo($curl_request, CURLINFO_HTTP_CODE);
-
-		// Set the last uri variable
-		$this->last_uri = $uri;
 
 		// Return an instance of REST_Response with the collected data
 		return new REST_Response($data, $status);
