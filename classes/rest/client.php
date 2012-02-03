@@ -6,7 +6,7 @@
  * @package    Kohana/REST Client
  * @category   Extension
  * @author     Kohana Team
- * @copyright  (c) 2011 Kohana Team
+ * @copyright  (c) 2011-2012 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class REST_Client {	
@@ -54,15 +54,15 @@ class REST_Client {
                     'content_type' => 'application/json'
                 );
 
-                // Overlay the passed configuration information on top of the
-                // defaults
+                // Overlay the passed configuration information on top of
+                // the defaults
                 $config = array_merge($defaults, $config);
             }
 
             // If no configuration options were passed in
 			if ($config === NULL) {
 				// Load the configuration for this client
-				$config = Kohana::config('rest')->$name;
+				$config = Kohana::$config->load('rest')->get($name);
 			}
 
 			// Create the client instance
@@ -235,7 +235,7 @@ class REST_Client {
 	 * @param   string  the method we are using to make the HTTP request
 	 * @param   string  the location that we are requesting
 	 * @param   array   an array of key value pairs to transform into parameters
-	 * @return  string   the URI where the requested document can be located
+	 * @return  string  the URI where the requested document can be located
 	 */
 	protected function _build_uri($method, $location = NULL, $parameters = NULL)
 	{
@@ -257,4 +257,4 @@ class REST_Client {
 		return $uri;
 	}
 
-}
+} // End REST_Client

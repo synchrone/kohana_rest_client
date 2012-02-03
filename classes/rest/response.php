@@ -1,13 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
 /**
  * Defines a structure for data returned by any of the HTTP request methods returned by Rest_Client
  *
- * @package    Kohana/REST
+ * @package    Kohana/REST Client
  * @category   Extension
- * @author     Neuroxy
- * @copyright  (c) 2010 Neuroxy
- * @license    FIXME
+ * @author     Kohana Team
+ * @copyright  (c) 2011-2012 Kohana Team
+ * @license    http://kohanaphp.com/license
  */
 class REST_Response {	
 
@@ -35,4 +34,4 @@ class REST_Response {
 		$this->status = $status;
 	}
 
-}
+} // End REST_Response
