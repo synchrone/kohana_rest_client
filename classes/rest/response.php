@@ -8,30 +8,30 @@
  * @copyright  (c) 2011-2012 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class REST_Response {	
+class REST_Response {   
 
-	/**
-	 * @var  string  the raw response returned by the HTTP request
-	 */
-	public $data = NULL;
+    /**
+     * @var  string  the raw response returned by the HTTP request
+     */
+    public $data = NULL;
 
-	/**
-	 * @var  array  the HTTP status returned
-	 */
-	public $status = NULL;
+    /**
+     * @var  array  the HTTP status returned
+     */
+    public $status = NULL;
 
-	/**
-	 * Stores the data that gets passed in to the public members
-	 *
-	 * @param   string  the raw text data returned by an HTTP request
-	 * @param   string  the http status that was returned by the HTTP request
-	 * @return  void
-	 */
-	public function __construct($data, $status)
-	{
-		// Set the member variables to match the data that was passed in
-		$this->data = $data;
-		$this->status = $status;
-	}
+    /**
+     * Stores the data that gets passed in to the public members
+     *
+     * @param   string  the raw text data returned by an HTTP request
+     * @param   string  the http status that was returned by the HTTP request
+     * @return  void
+     */
+    public function __construct($data, $status)
+    {
+        // Set the member variables to match the data that was passed in
+        $this->data = $data;
+        $this->status = $status;
+    }
 
 } // End REST_Response
