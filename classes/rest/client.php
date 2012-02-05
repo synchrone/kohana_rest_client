@@ -266,7 +266,7 @@ class REST_Client {
             }
 
             // Add this header key/value pair to the response headers array
-            $response_headers[$key] = $value;
+            $response_headers[$key] = trim($value);
         }
 
         // The rest of the data is the response body
