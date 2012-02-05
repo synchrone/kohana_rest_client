@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Manages communication with REST services through a simple object abstraction
- * API. Instances of this class are referenced by name.
+ * API using curl to do all of the HTTP grunt work.
  *
  * @package    Kohana/REST Client
  * @category   Extension
@@ -73,7 +73,7 @@ class REST_Client {
     }
 
     /**
-     * Constants for supported HTTP methods
+     * Constants for supported HTTP methods.
      */
     const HTTP_GET    = 'GET';
     const HTTP_PUT    = 'PUT';
@@ -81,11 +81,16 @@ class REST_Client {
     const HTTP_DELETE = 'DELETE';
 
     /**
-     * Constants for known HTTP statuses
+     * Constants for known HTTP statuses.
      */
     const HTTP_OK = 200;
     const HTTP_CREATED = 201;
     const HTTP_ACCEPTED = 202;
+
+    /**
+     * Constants for common character sequences.
+     */
+    const CRLF = "\r\n";
 
     // Instance name
     protected $_instance;
@@ -208,11 +213,9 @@ class REST_Client {
         curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, TRUE);
 
         // If we have headers that we need to send up with the request
-        if ($headers !== NULL)
-        {
+        if ($headers !== NULL) {
             // Loop over the headers that were passed in
-            foreach ($headers as $key => $value)
-            {
+            foreach ($headers as $key => $value) {
                 // Collapse the key => value pair into one line
                 $simple_headers[] = $key.': '.$value;
             }
@@ -221,12 +224,56 @@ class REST_Client {
             curl_setopt($curl_request, CURLOPT_HTTPHEADER, $simple_headers);
         }
 
-        // Run the request, get the status, close the request
-        $data = curl_exec($curl_request);
+        // Return the headers with the request body
+        curl_setopt($curl_request, CURLOPT_HEADER, TRUE);
+
+        // Run the request and return the data including HTTP headers
+        $response_data = curl_exec($curl_request);
+
+        // Grab the HTTP status code that was returned
         $status = curl_getinfo($curl_request, CURLINFO_HTTP_CODE);
 
+        // Close this curl session
+        curl_close($curl_request);
+
+        // Break apart all instances of the CRLF sequence
+        $response_data  = explode(self::CRLF, $response_data);
+
+        // Create an empty array to store all of the HTTP response headers
+        $response_headers = array();
+
+        // Loop over each of the broken apart response data lines
+        while ($line = array_shift($response_data)) {
+            // If the current line is an empty string
+            if ($line === '') {
+                // We have finished parsing the headers
+                break;
+            }
+
+            // Break apart the current header line on the colon character
+            $parts = explode(':', $line, 2);
+
+            // Grab the key and the value from the broken out parts
+            $key = array_shift($parts);
+            $value = count($parts) > 0 ? array_shift($parts) : NULL;
+
+            // If the key starts with 'HTTP' and the value is NULL
+            if (substr($key, 0, 4) === 'HTTP' AND $value === NULL) {
+                // This is an HTTP status line, so make the value be the key
+                // and force-assign the key to the made-up header name "status"
+                $value = $key;
+                $key = 'status';
+            }
+
+            // Add this header key/value pair to the response headers array
+            $response_headers[$key] = $value;
+        }
+
+        // The rest of the data is the response body
+        $response_body = implode(self::CRLF, $response_data);
+
         // Return an instance of REST_Response with the collected data
-        return new REST_Response($data, $status);
+        return new REST_Response($status, $response_headers, $response_body);
     }
 
     /**

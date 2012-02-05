@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Defines a structure for data returned by any of the HTTP request methods returned by Rest_Client
+ * Defines a structure for data returned by any of the HTTP request methods
+ * defined in the REST_Client class.
  *
  * @package    Kohana/REST Client
  * @category   Extension
@@ -11,27 +12,34 @@
 class REST_Response {   
 
     /**
-     * @var  string  the raw response returned by the HTTP request
-     */
-    public $data = NULL;
-
-    /**
-     * @var  array  the HTTP status returned
+     * @var  array  The HTTP status value.
      */
     public $status = NULL;
 
     /**
-     * Stores the data that gets passed in to the public members
+     * @var  string  The HTTP headers returned.
+     */
+    public $headers = NULL;
+
+    /**
+     * @var  string  The HTTP response body.
+     */
+    public $body = NULL;
+
+    /**
+     * Stores the data that gets passed in to the public members.
      *
-     * @param   string  the raw text data returned by an HTTP request
-     * @param   string  the http status that was returned by the HTTP request
+     * @param   string  The HTTP status value.
+     * @param   string  The parsed headers.
+     * @param   string  The response body.
      * @return  void
      */
-    public function __construct($data, $status)
+    public function __construct($status, $headers, $body)
     {
         // Set the member variables to match the data that was passed in
-        $this->data = $data;
         $this->status = $status;
+        $this->headers = $headers;
+        $this->body = $body;
     }
 
 } // End REST_Response
