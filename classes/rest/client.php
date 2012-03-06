@@ -51,7 +51,8 @@ class REST_Client {
                 // Define a default set of configuration options
                 $defaults = array(
                     'uri' => 'http://localhost/',
-                    'content_type' => 'application/json'
+                    'content_type' => 'application/json',
+                    'keep_alive' => NULL,
                 );
 
                 // Overlay the passed configuration information on top of
@@ -141,7 +142,8 @@ class REST_Client {
     public function get($location = NULL, $parameters = NULL)
     {
         // Get the requested document and return it
-        return $this->_http_request(self::HTTP_GET, $location, $parameters);
+        return $this->_http_request(self::HTTP_GET, $location, $parameters,
+            $this->_get_request_headers());
     }
 
     /**
@@ -155,7 +157,7 @@ class REST_Client {
     {
         // Get the requested document and return it
         return $this->_http_request(self::HTTP_PUT, $location, $parameters,
-            array('Content-Type' => $this->_config['content_type']));
+            $this->_get_request_headers());
     }
 
     /**
@@ -169,7 +171,7 @@ class REST_Client {
     {
         // Get the requested document and return it
         return $this->_http_request(self::HTTP_POST, $location, $parameters,
-            array('Content-Type' => $this->_config['content_type']));
+            $this->_get_request_headers());
     }
 
     /**
@@ -182,7 +184,30 @@ class REST_Client {
     public function delete($location = NULL, $parameters = NULL)
     {
         // Get the requested document and return it
-        return $this->_http_request(self::HTTP_DELETE, $location, $parameters);
+        return $this->_http_request(self::HTTP_DELETE, $location, $parameters,
+            $this->_get_request_headers());
+    }
+
+    /**
+     * Returns the common headers we will use for every request based on the
+     * configuration data.
+     *
+     * @return
+     */
+    protected function _get_request_headers()
+    {
+        // We always have a content type
+        $headers = array('Content-Type' => $this->_config['content_type']);
+
+        // If we have a configured keep-alive timeout value
+        if (isset($this->_config['keep_alive'])) {
+            // Add the keep-alive headers
+            $headers['Connection'] = 'Keep-Alive';
+            $headers['Keep-Alive'] = (string) $this->_config['keep_alive'];
+        }
+
+        // Return the finished request headers
+        return $headers;
     }
 
     /**
