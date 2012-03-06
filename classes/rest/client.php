@@ -99,6 +99,11 @@ class REST_Client {
     protected $_config;
 
     /**
+     * @var  int  Holds a reference to the cURL resource.
+     */
+    protected $_curl_request = NULL;
+
+    /**
      * Stores the client configuration locally and names the instance.
      *
      * [!!] This method cannot be accessed directly, you must use [REST_Client::instance].
@@ -115,6 +120,15 @@ class REST_Client {
 
         // Store this client instance
         self::$instances[$name] = $this;
+    }
+
+    protected function __destruct()
+    {
+        // If we have a cURL session
+        if (isset($this->_curl_request)) {
+            // Close this cURL session
+            curl_close($this->_curl_request);
+        }
     }
 
     /**
@@ -185,8 +199,14 @@ class REST_Client {
         // Determine what the final URI for this request should be
         $uri = $this->_build_uri($method, $location, $parameters);
 
-        // Initialize the CURL library
-        $curl_request = curl_init();
+        // If we do not already have a cURL request handle
+        if ( ! isset($this->_curl_request)) {
+            // Initialize a new cURL request
+            $curl_request = $this->_curl_request = curl_init();
+        } else {
+            // Reuse the existing request handle
+            $curl_request = $this->_curl_request;
+        }
 
         // No matter what type of request this is we always need the URI
         curl_setopt($curl_request, CURLOPT_URL, $uri);
@@ -232,9 +252,6 @@ class REST_Client {
 
         // Grab the HTTP status code that was returned
         $status = curl_getinfo($curl_request, CURLINFO_HTTP_CODE);
-
-        // Close this curl session
-        curl_close($curl_request);
 
         // Break apart all instances of the CRLF sequence
         $response_data  = explode(self::CRLF, $response_data);
