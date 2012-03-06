@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Manages communication with REST services through a simple object abstraction
  * API using curl to do all of the HTTP grunt work.
@@ -32,8 +32,8 @@ class REST_Client {
      *     // Create a custom configured instance
      *     $client = REST_Client::instance('custom', $config);
      *
-     * @param   string   instance name
-     * @param   array    configuration parameters
+     * @param   string  $name    instance name
+     * @param   array   $config  configuration parameters
      * @return  REST_Client
      */
     public static function instance($name = NULL, $config = NULL)
@@ -120,8 +120,8 @@ class REST_Client {
     /**
      * Does an HTTP GET request and returns the result
      *
-     * @param   string  the location that we are requesting
-     * @param   array   an array of key value pairs to transform into parameters
+     * @param   string  $location    the location that we are requesting
+     * @param   array   $parameters  an array of key value pairs to transform into parameters
      * @return  object  a REST_Response object
      */
     public function get($location = NULL, $parameters = NULL)
