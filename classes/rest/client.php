@@ -123,7 +123,12 @@ class REST_Client {
         self::$instances[$name] = $this;
     }
 
-    protected function __destruct()
+    /**
+     * Cleans up any resources used by this class instance.
+     *
+     * @return  null
+     */
+    public function __destruct()
     {
         // If we have a cURL session
         if (isset($this->_curl_request)) {
