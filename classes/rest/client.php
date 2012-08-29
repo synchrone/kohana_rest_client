@@ -67,7 +67,8 @@ class REST_Client {
             }
 
             // Create the client instance
-            new REST_Client($name, $config);
+            $class_name = get_called_class();
+            new $class_name($name, $config);
         }
 
         return self::$instances[$name];
@@ -104,6 +105,8 @@ class REST_Client {
      */
     protected $_curl_request = NULL;
 
+    protected $_response_class = 'REST_Response';
+
     /**
      * Stores the client configuration locally and names the instance.
      *
@@ -135,6 +138,20 @@ class REST_Client {
             // Close this cURL session
             curl_close($this->_curl_request);
         }
+    }
+
+    /**
+     * @param $type string class name
+     * @return $this
+     * @throws Kohana_Exception
+     */
+    public function as_object($type){
+        if(class_exists($type)){
+            $this->_response_class = $type;
+        }else{
+            throw new Kohana_Exception('No such class '.$type);
+        }
+        return $this;
     }
 
     /**
@@ -210,6 +227,7 @@ class REST_Client {
             $headers['Connection'] = 'Keep-Alive';
             $headers['Keep-Alive'] = (string) $this->_config['keep_alive'];
         }
+        $headers['Expect'] = ''; //in case curl would want to expect
 
         // Return the finished request headers
         return $headers;
@@ -320,7 +338,7 @@ class REST_Client {
         $response_body = implode(self::CRLF, $response_data);
 
         // Return an instance of REST_Response with the collected data
-        return new REST_Response($status, $response_headers, $response_body);
+        return new $this->_response_class($status, $response_headers, $response_body);
     }
 
     /**
