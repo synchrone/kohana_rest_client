@@ -101,7 +101,7 @@ class REST_Client {
     protected $_config;
 
     /**
-     * @var  int  Holds a reference to the cURL resource.
+     * @var  resource  Holds a reference to the cURL resource.
      */
     protected $_curl_request = NULL;
 
@@ -109,10 +109,9 @@ class REST_Client {
 
     /**
      * Stores the client configuration locally and names the instance.
-     *
      * [!!] This method cannot be accessed directly, you must use [REST_Client::instance].
-     *
-     * @return  void
+     * @param $name
+     * @param array $config
      */
     protected function __construct($name, array $config)
     {
@@ -159,7 +158,7 @@ class REST_Client {
      *
      * @param   string  $location    the location that we are requesting
      * @param   array   $parameters  an array of key value pairs to transform into parameters
-     * @return  object  a REST_Response object
+     * @return  REST_Response  a REST_Response object
      */
     public function get($location = NULL, $parameters = NULL)
     {
@@ -171,9 +170,9 @@ class REST_Client {
     /**
      * Does an HTTP PUT request and returns the result
      *
-     * @param   string  the location that we are requesting
-     * @param   mixed   an array of key value pairs to transform into parameters or a simple string to send as the body
-     * @return  object  a REST_Response object
+     * @param   string $location the location that we are requesting
+     * @param   mixed  $parameters an array of key value pairs to transform into parameters or a simple string to send as the body
+     * @return  REST_Response  a REST_Response object
      */
     public function put($location = NULL, $parameters = NULL)
     {
@@ -185,9 +184,9 @@ class REST_Client {
     /**
      * Does an HTTP POST request and returns the result
      *
-     * @param   string  the location that we are requesting
-     * @param   mixed   an array of key value pairs to transform into parameters or a simple string to send as the body
-     * @return  object  a REST_Response object
+     * @param   string $location the location that we are requesting
+     * @param   mixed  $parameters an array of key value pairs to transform into parameters or a simple string to send as the body
+     * @return  REST_Response  a REST_Response object
      */
     public function post($location = NULL, $parameters = NULL)
     {
@@ -199,9 +198,9 @@ class REST_Client {
     /**
      * Does an HTTP POST request and returns the result
      *
-     * @param   string  the location that we are requesting
-     * @param   mixed   an array of key value pairs to transform into parameters or a simple string to send as the body
-     * @return  object  a REST_Response object
+     * @param   string $location the location that we are requesting
+     * @param   mixed  $parameters an array of key value pairs to transform into parameters or a simple string to send as the body
+     * @return  REST_Response  a REST_Response object
      */
     public function delete($location = NULL, $parameters = NULL)
     {
@@ -214,7 +213,7 @@ class REST_Client {
      * Returns the common headers we will use for every request based on the
      * configuration data.
      *
-     * @return
+     * @return array
      */
     protected function _get_request_headers()
     {
@@ -236,11 +235,11 @@ class REST_Client {
     /**
      * Makes the HTTP request out to the the remote REST server
      *
-     * @param   string  the method we are using to make the HTTP request
-     * @param   string  the location that we are requesting
-     * @param   array   an array of key value pairs to transform into parameters
-     * @param   array   an array of key value pairs to transform into headers
-     * @return  object  a REST_Response object
+     * @param   string $method the method we are using to make the HTTP request
+     * @param   string $location the location that we are requesting
+     * @param   array  $parameters an array of key value pairs to transform into parameters
+     * @param   array  $headers an array of key value pairs to transform into headers
+     * @return  REST_Response  a REST_Response object
      */
     protected function _http_request($method, $location = NULL, $parameters = NULL, $headers = NULL)
     {
@@ -283,6 +282,7 @@ class REST_Client {
         // If we have headers that we need to send up with the request
         if ($headers !== NULL) {
             // Loop over the headers that were passed in
+            $simple_headers = array();
             foreach ($headers as $key => $value) {
                 // Collapse the key => value pair into one line
                 $simple_headers[] = $key.': '.$value;
@@ -344,9 +344,9 @@ class REST_Client {
     /**
      * Builds the URI for the request using the configuration data and the passed location
      *
-     * @param   string  the method we are using to make the HTTP request
-     * @param   string  the location that we are requesting
-     * @param   array   an array of key value pairs to transform into parameters
+     * @param   string $method the method we are using to make the HTTP request
+     * @param   string $location the location that we are requesting
+     * @param   array  $parameters an array of key value pairs to transform into parameters
      * @return  string  the URI where the requested document can be located
      */
     protected function _build_uri($method, $location = NULL, $parameters = NULL)
