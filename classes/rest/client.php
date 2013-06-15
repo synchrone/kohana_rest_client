@@ -68,7 +68,7 @@ class REST_Client {
 
             // Create the client instance
             $class_name = get_called_class();
-            new $class_name($name, $config);
+            self::$instances[$name] = new $class_name($name, $config);
         }
 
         return self::$instances[$name];
@@ -120,9 +120,6 @@ class REST_Client {
 
         // Store the config locally
         $this->_config = $config;
-
-        // Store this client instance
-        self::$instances[$name] = $this;
     }
 
     /**
