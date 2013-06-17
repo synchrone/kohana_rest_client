@@ -264,7 +264,8 @@ class REST_Client {
         // If this is a PUT or POST request
         if ($method === self::HTTP_PUT OR $method === self::HTTP_POST) {
             // Set the post fields
-            curl_setopt($curl_request, CURLOPT_POSTFIELDS, $parameters);
+            curl_setopt($curl_request, CURLOPT_POSTFIELDS, http_build_query($parameters));
+            unset($headers['Content-Type']); //let curl figure it out
         }
 
         // If this is a DELETE or PUT request
