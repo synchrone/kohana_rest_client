@@ -15,7 +15,7 @@ class REST_Json_Response extends REST_Response implements ArrayAccess
      */
     public function __construct($status, $headers, $body)
     {
-        $this->data = json_decode($body);
+        $this->data = is_string($body) ? json_decode($body) : $body;
 
         if($status !== 200){
             if($this->data !== null){
